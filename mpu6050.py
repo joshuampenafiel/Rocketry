@@ -1,0 +1,57 @@
+#import smbus
+import time
+
+# MPU-6050 Registers
+MPU6050_ADDR = 0x68
+PWR_MGMT_1 = 0x6B
+ACCEL_XOUT_H = 0x3B
+GYRO_XOUT_H = 0x43
+
+# Initialize I2C bus
+#bus = smbus.SMBus(1)
+
+# Wake up MPU-6050 (it starts in sleep mode)
+#bus.write_byte_data(MPU6050_ADDR, PWR_MGMT_1, 0)
+
+def read_raw_data(addr):
+ #   high = bus.read_byte_data(MPU6050_ADDR, addr)
+  #  low = bus.read_byte_data(MPU6050_ADDR, addr + 1)
+
+   # value = (high << 8) | low
+    if value > 32768:
+        value -= 65536
+    return value
+
+print("Reading MPU-6050 data... Press Ctrl+C to stop")
+
+try:
+    while True:
+        # Read accelerometer data
+        acc_x = read_raw_data(ACCEL_XOUT_H)
+        acc_y = read_raw_data(ACCEL_XOUT_H + 2)
+        acc_z = read_raw_data(ACCEL_XOUT_H + 4)
+
+        # Read gyroscope data
+        gyro_x = read_raw_data(GYRO_XOUT_H)
+        gyro_y = read_raw_data(GYRO_XOUT_H + 2)
+        gyro_z = read_raw_data(GYRO_XOUT_H + 4)
+
+        # Convert to physical units
+        # Accelerometer: ±2g → 16384 LSB/g
+        ax = acc_x / 16384.0
+        ay = acc_y / 16384.0
+        az = acc_z / 16384.0
+
+        # Gyroscope: ±250°/s → 131 LSB/(°/s)
+        gx = gyro_x / 131.0
+        gy = gyro_y / 131.0
+        gz = gyro_z / 131.0
+
+        print(f"Accel (g):  X={ax:.2f}  Y={ay:.2f}  Z={az:.2f}")
+        print(f"Gyro (°/s): X={gx:.2f}  Y={gy:.2f}  Z={gz:.2f}")
+        print("-" * 50)
+
+        time.sleep(0.5)
+
+except KeyboardInterrupt:
+    print("\nStopped.")
