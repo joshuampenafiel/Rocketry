@@ -7,17 +7,6 @@ ser = serial.Serial(
     timeout=1
 )
 
-print("Listening for GNRMC sentences...")
 
-try:
-    while True:
-        line = ser.readline().decode('ascii', errors='replace').strip()
-        # Check for GNRMC sentence
-        if line.startswith('$GNRMC'):
-            print(line)
 
-except KeyboardInterrupt:
-    print("\nExiting...")
-
-finally:
-    ser.close()
+line = ser.readline().decode('ascii', errors='replace').strip()
