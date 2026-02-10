@@ -13,3 +13,6 @@ bmp = adafruit_bmp3xx.BMP3XX_I2C(i2c)
 bmp.pressure_oversampling = 8
 bmp.temperature_oversampling = 2
 bmp.sea_level_pressure = 1013.25  # hPa (adjust for your location)
+temperature = bmp.temperature
+pressure = bmp.pressure
+altitude = bmp.altitude
