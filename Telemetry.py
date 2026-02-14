@@ -1,10 +1,10 @@
 import csv
-import bmp390
-import gps
-import mpu6050
+import bmp390cmds
+import gpscmds
+import mpu6050cmds
 import time
 #record data
-line = gps.line
+line = gpscmds.line
 clock = []
 lat = []
 lon = []
@@ -14,15 +14,15 @@ if line.startswith('$GNRMC'):
     clock = parts[1]
     lat = parts[3] 
     lon = parts[5]              
-    temp = bmp390.temperature
-    press = bmp390.pressure
-    alt = bmp390.altitude
-    gx = mpu6050.gx
-    gy = mpu6050.gy
-    gz = mpu6050.gz
-    ax = mpu6050.ax
-    ay = mpu6050.ay
-    az = mpu6050.az
+    temp = bmp390cmds.temperature
+    press = bmp390cmds.pressure
+    alt = bmp390cmds.altitude
+    gx = mpu6050cmds.gx
+    gy = mpu6050cmds.gy
+    gz = mpu6050cmds.gz
+    ax = mpu6050cmds.ax
+    ay = mpu6050cmds.ay
+    az = mpu6050cmds.az
     data = [gx,gy,gz,ax,ay,az,temp,press,alt,lat,lon,clock]
     #open the csv
     with open('Telemetry.csv','a') as csvfile:

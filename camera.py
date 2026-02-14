@@ -83,6 +83,7 @@ while True:
         )
         cv2.imwrite(frame_filename, frame)
         print(f"Saved {frame_filename}")
+        exec(open(os.path.join(os.path.expanduser('~'),"work","drone","Rocketry1.2","Telemetry.py")).read()) 
 
     if cv2.waitKey(1) & 0xFF == ord('q'):
         break
