@@ -1,6 +1,8 @@
 import cv2
 import time
-import oswidth, height = 1080,720
+import os
+
+width, height = 1080,720
 
 CAMERA_INDEX = 0
 video_output = "output.mp4"
@@ -70,8 +72,8 @@ while True:
         )
         cv2.imwrite(frame_filename, frame)
         print(f"Saved {frame_filename}")
-        exec(open(os.path.join(os.path.expanduser('~'),"work","drone","Rocketry","Telemetry.py")).read())
-        exec(open(os.path.join(os.path.expanduser('~'),"work","drone","Rocketry","Metrics_Control.py")).read())
+        exec(open(os.path.join(os.path.expanduser('~'),"work","drone","Josh-work","Rocketry","Telemetry.py")).read())
+        #exec(open(os.path.join(os.path.expanduser('~'),"work","drone","Rocketry","Metrics_Control.py")).read())
 
     # Optional: display
     cv2.imshow("Camera", frame)

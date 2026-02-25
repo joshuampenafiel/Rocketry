@@ -1,6 +1,9 @@
 import cv2
 import time
 import os
+import Telemetry.py
+
+Telemetry.setup()
 #
 # # Set camera index (usually 0 for first USB camera)
 camera_index = 0
@@ -83,8 +86,8 @@ while True:
         )
         cv2.imwrite(frame_filename, frame)
         print(f"Saved {frame_filename}")
-        exec(open(os.path.join(os.path.expanduser('~'),"work","drone","Rocketry","Telemetry.py")).read())
-        exec(open(os.path.join(os.path.expanduser('~'),"work","drone","Rocketry","Metrics_Control.py")).read())
+        exec(open(os.path.join(os.path.expanduser('~'),"work","drone","Josh-work","Rocketry","Telemetry.py")).read())
+        exec(open(os.path.join(os.path.expanduser('~'),"work","drone","Josh-work","Rocketry","Metrics_Control.py")).read())
 
     if cv2.waitKey(1) & 0xFF == ord('q'):
         break

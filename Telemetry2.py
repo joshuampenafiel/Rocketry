@@ -18,86 +18,93 @@ pressure_oversampling = 8
 temperature_oversampling = 2    
 sea_level_pressure = 1013.25  # hPa (adjust for your location)
 
-def setup():
-    IMU_Setup()
-    Barrometer_Setup()
-    GPS_Setup()
 
-def IMU_Setup():
-    MPU6050_ADDR = 0x68
-    PWR_MGMT_1 = 0x6B
-    ACCEL_XOUT_H = 0x3B
-    GYRO_XOUT_H = 0x43
-    # Initialize I2C bus
-    bus = smbus.SMBus(1)
-    # Wake up MPU-6050 (it starts in sleep mode)
-    bus.write_byte_data(MPU6050_ADDR, PWR_MGMT_1, 0)
+class Telemetry:
+    def setup(self):
+        self.IMU_Setup()
+        self.Barrometer_Setup()
+        self.GPS_Setup()
+        print("Setup done")
 
-def GPS_Setup():
-    ser = serial.Serial(
-    port='/dev/ttyS0',
-    baudrate=115200,
-    timeout=1
-)
+    def IMU_Setup(self):
+        self.MPU6050_ADDR = 0x68
+        PWR_MGMT_1 = 0x6B
+        self.ACCEL_XOUT_H = 0x3B
+        self.GYRO_XOUT_H = 0x43
+        # Initialize I2C bus
+        self.bus = smbus.SMBus(1)
+        # Wake up MPU-6050 (it starts in sleep mode)
+        self.bus.write_byte_data(self.MPU6050_ADDR, PWR_MGMT_1, 0)
+        print("Imu setup done")
+        
+        
+    def GPS_Setup(self):
+        self.ser = serial.Serial(
+        port='/dev/ttyS0',
+        baudrate=115200,
+        timeout=1
+        )
+        print("gps setup done")
 
-def Barrometer_Setup():
-    # Create I2C bus
-    i2c = busio.I2C(board.SCL, board.SDA)
 
-    # Create BMP390 sensor object
-    bmp = adafruit_bmp3xx.BMP3XX_I2C(i2c)
+    def Barrometer_Setup(self):
+        # Create I2C bus
+        i2c = busio.I2C(board.SCL, board.SDA)
 
-def Read_IMU():
-    acc_x = read_raw_data(ACCEL_XOUT_H)
-    acc_y = read_raw_data(ACCEL_XOUT_H + 2)
-    acc_z = read_raw_data(ACCEL_XOUT_H + 4)
+        # Create BMP390 sensor object
+        self.bmp = adafruit_bmp3xx.BMP3XX_I2C(i2c)
+        print("barrometer setup done")
 
-        # Read gyroscope data
-    gyro_x = read_raw_data(GYRO_XOUT_H)
-    gyro_y = read_raw_data(GYRO_XOUT_H + 2)
-    gyro_z = read_raw_data(GYRO_XOUT_H + 4)
+    def Read_IMU(self,ACCEL_XOUT_H,GYRO_XOUT_H):
+        acc_x = self.read_raw_data(self.ACCEL_XOUT_H)
+        acc_y = self.read_raw_data(self.ACCEL_XOUT_H + 2)
+        acc_z = self.read_raw_data(self.ACCEL_XOUT_H + 4)
 
-        # Convert to physical units
-        # Accelerometer: ±2g → 16384 LSB/g
-    ax = acc_x / accLSB_to_force 
-    ay = acc_y / accLSB_to_force 
-    az = acc_z / accLSB_to_force 
-        # Gyroscope: ±250°/s → 131 LSB/(°/s)
-    gx = gyro_x / gyroLSB_to_dps
-    gy = gyro_y / gyroLSB_to_dps
-    gz = gyro_z / gyroLSB_to_dps
-    return ax, ay, az, gx, gy, gz
+            # Read gyroscope data
+        gyro_x = self.read_raw_data(self.GYRO_XOUT_H)
+        gyro_y = self.read_raw_data(self.GYRO_XOUT_H + 2)
+        gyro_z = self.read_raw_data(self.GYRO_XOUT_H + 4)
 
-def read_raw_data(addr):
-    high = bus.read_byte_data(MPU6050_ADDR, addr)
-    low = bus.read_byte_data(MPU6050_ADDR, addr + 1)
+            # Convert to physical units
+            # Accelerometer: ±2g → 16384 LSB/g
+        self.ax = acc_x / accLSB_to_force 
+        self.ay = acc_y / accLSB_to_force 
+        self.az = acc_z / accLSB_to_force 
+            # Gyroscope: ±250°/s → 131 LSB/(°/s)
+        self.gx = gyro_x / gyroLSB_to_dps
+        self.gy = gyro_y / gyroLSB_to_dps
+        self.gz = gyro_z / gyroLSB_to_dps
+        return self.ax,self.ay,self.az,self.gx,self.gy,self.gz
 
-    value = (high << 8) | low
-    if value > 32768:
-        value -= 65536
-    return value
+    def read_raw_data(self,addr):
+        high = self.bus.read_byte_data(self.MPU6050_ADDR, addr)
+        low = self.bus.read_byte_data(self.MPU6050_ADDR, addr + 1)
 
-def Read_Barrometer():
+        value = (high << 8) | low
+        if value > 32768:
+            value -= 65536
+        return value
 
-    temp= bmp.temperature
-    press = bmp.pressure
-    alt = bmp.altitude
-    return temp,press,alt
-    
-def Read_GPS():
-    line = ser.readline().decode('ascii', errors='replace').strip()
-    line = gpscmds.line
-    clock = []
-    lat = []
-    lon = []
-    return clock,lat,lon
+    def Read_Barrometer(self):
 
-def Read_Data():
-    IMU_Data = Read_IMU()
-    Barrometer_Data = Read_Barrometer()
-    GPS_Data = Read_GPS()
-    data = [IMU_Data,Barrometer_Data,GPS_Data]
-    return data
+        self.temp= self.bmp.temperature
+        self.press = self.bmp.pressure
+        self.alt = self.bmp.altitude
+        return self.temp,self.press,self.alt
+    def Read_GPS(self):
+        line = self.ser.readline().decode('ascii', errors='replace').strip()
+        clock = []
+        lat = []
+        lon = []
+        return clock,lat,lon
+
+    def Read_Data(self):
+        IMU_Data = self.Read_IMU(self.ACCEL_XOUT_H,self.GYRO_XOUT_H)
+        Barrometer_Data = self.Read_Barrometer()
+        GPS_Data = self.Read_GPS()
+        data = [IMU_Data,Barrometer_Data,GPS_Data]
+        print(IMU_Data)
+        return data
 
 def Write_Data():
         with open('Telemetry.csv','a') as csvfile:
@@ -105,7 +112,9 @@ def Write_Data():
         print("done Telemetry\n")
 
 # --- Main Code ---
-setup() # should be called in a different function but for testing purposes it's here
+tel = Telemetry()
+tel.setup() # should be called in a different function but for testing purposes it's here
 
-data = Read_Data()
+data = tel.Read_Data()
 
+Write_Data()
