@@ -3,7 +3,7 @@ import time
 import os
 import Telemetry.py
 
-Telemetry.setup()
+tel = Telemetry
 #
 # # Set camera index (usually 0 for first USB camera)
 camera_index = 0
@@ -59,7 +59,7 @@ while True:
         break
 
     frame_count += 1
-#
+
     current_time = time.time()
     calculated_fps = 1.0 / (current_time - prev_time)
     prev_time = current_time
