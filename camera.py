@@ -1,9 +1,7 @@
 import cv2
 import time
 import os
-import Telemetry.py
 
-tel = Telemetry
 #
 # # Set camera index (usually 0 for first USB camera)
 camera_index = 0
