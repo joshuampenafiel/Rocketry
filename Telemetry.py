@@ -5,7 +5,7 @@ import board
 import busio
 import adafruit_bmp3xx
 import serial
-import control
+import control as con
 # import bmp390cmds
 # import gpscmds
 # import mpu6050cmds
@@ -15,7 +15,7 @@ gyroLSB_to_dps = 131
 pressure_oversampling = 8
 temperature_oversampling = 2    
 sea_level_pressure = 1013.25  # hPa (adjust for your location)
-con = control
+
 
 class Telemetry:
 
